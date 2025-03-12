@@ -1,0 +1,30 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/microdiag-app/protocol/openid-connect/certs
+  application:
+    name: notes-ms
+  data:
+    mongodb:
+      database: patientnotes
+      port: '27017'
+      host: localhost
+  datasource:
+    password: mdcmdcA.1
+    username: mdc
+    uri: mongodb://mdc:mdcmdcA.1@localhost:27017/patientnotes?authSource=admin
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: '10'
+    lease-expiration-duration-in-seconds: '30'
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:${eurekaMSPort}/eureka/
+server:
+  port: ${notesMSPort}
+
+# environment variables
+eurekaMSPort: '9102'
+notesMSPort: '9005'
