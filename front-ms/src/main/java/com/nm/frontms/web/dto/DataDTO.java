@@ -9,7 +9,6 @@ import java.util.Objects;
 
 public class DataDTO {
 
-
     @NotBlank(message = "Veuillez renseigner le prénom.")
     private String firstNameToSearch;
     @NotBlank(message = "Veuillez renseigner le nom.")
@@ -17,18 +16,19 @@ public class DataDTO {
     private PatientBean patient;
     private List<NoteBean> notesDTOs;
     private String noteText;
-
+    private String riskLevel;
 
     public DataDTO() {
     }
 
     public DataDTO(String firstNameToSearch, String lastNameToSearch, PatientBean patient,
-                   List<NoteBean> notesDTOs, String noteText) {
+                   List<NoteBean> notesDTOs, String noteText, String riskLevel) {
         this.firstNameToSearch = firstNameToSearch;
         this.lastNameToSearch = lastNameToSearch;
         this.patient = patient;
         this.notesDTOs = notesDTOs;
         this.noteText = noteText;
+        this.riskLevel = riskLevel;
     }
 
     public String getFirstNameToSearch() {
@@ -71,14 +71,26 @@ public class DataDTO {
         this.noteText = noteText;
     }
 
+    public String getRiskLevel() {
+        return riskLevel;
+    }
+
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof DataDTO dataDTO)) return false;
-        return Objects.equals(firstNameToSearch, dataDTO.firstNameToSearch) && Objects.equals(lastNameToSearch, dataDTO.lastNameToSearch) && Objects.equals(patient, dataDTO.patient) && Objects.equals(notesDTOs, dataDTO.notesDTOs) && Objects.equals(noteText, dataDTO.noteText);
+        if (!(o instanceof DataDTO formData)) return false;
+        return Objects.equals(firstNameToSearch, formData.firstNameToSearch) && Objects.equals(lastNameToSearch,
+                formData.lastNameToSearch) && Objects.equals(patient, formData.patient) && Objects.equals(notesDTOs,
+                formData.notesDTOs) && Objects.equals(noteText, formData.noteText) && Objects.equals(riskLevel,
+                formData.riskLevel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstNameToSearch, lastNameToSearch, patient, notesDTOs, noteText);
+        return Objects.hash(firstNameToSearch, lastNameToSearch, patient, notesDTOs, noteText, riskLevel);
     }
+
 }

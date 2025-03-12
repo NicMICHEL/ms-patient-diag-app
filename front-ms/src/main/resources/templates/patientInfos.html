@@ -6,149 +6,161 @@
     <title>welcome</title>
 </head>
 <body>
-    <h1 >Application Patient Diag</h1>
-    <form th:action="@{/logout}" method="post">
-        <br>
-        <button type="submit" th:text="'Se '+'déconnecter'" class="navButton" accesskey="d">
-            Se déconnecter
-        </button>
-    </form>
-    <form action="#" th:action="@{/client/getPatientFile}" th:object="${dataDTO}" method="GET">
-        <div class="box4">
-            <label>
-                <input type="text"  th:field="*{lastNameToSearch}" placeholder="nom" class="input300"/>
-            </label>
-            <label>
-                <input type="text"  th:field="*{firstNameToSearch}" placeholder="prenom" class="input300"/>
-            </label>
-            <input type="submit" value="Chercher" class="blueButton"/>
+<h1>Micro Diag App</h1>
+<form th:action="@{/logout}" method="post">
+    <br>
+    <button type="submit" th:text="'Se '+'déconnecter'" class="navButton" accesskey="d">
+        Se déconnecter
+    </button>
+</form>
+<form action="#" th:action="@{/client/getPatientFile}" th:object="${dataDTO}" method="GET">
+    <div class="box4">
+        <label>
+            <input type="text" th:field="*{lastNameToSearch}" placeholder="nom" class="input300"/>
+        </label>
+        <label>
+            <input type="text" th:field="*{firstNameToSearch}" placeholder="prenom" class="input300"/>
+        </label>
+        <input type="submit" value="Chercher" class="blueButton"/>
+    </div>
+    <div class="box4b">
+        <div>
+            <p class="error" th:if="${#fields.hasErrors('lastNameToSearch')}"
+               th:errors="*{lastNameToSearch}"></p>
         </div>
-        <div class="box4b">
-            <div>
-                <p class="error" th:if="${#fields.hasErrors('lastNameToSearch')}"
-                   th:errors="*{lastNameToSearch}"></p>
-            </div>
-            <div>
-                <p class="error" th:if="${#fields.hasErrors('firstNameToSearch')}"
-                        th:errors="*{firstNameToSearch}"></p>
-            </div>
+        <div>
+            <p class="error" th:if="${#fields.hasErrors('firstNameToSearch')}"
+               th:errors="*{firstNameToSearch}"></p>
         </div>
-        <div th:if="${#fields.hasGlobalErrors()}">
-            <p th:each="err : ${#fields.globalErrors() }" th:text="${err}" class="error" />
-        </div>
-        <br></br>
-    </form>
-    <table >
-        <thead>
-            <tr>
-                <th >Nom</th>
-                <th>Prenom</th>
-                <th>Date de naissance</th>
-                <th>Genre</th>
-                <th>Adresse</th>
-                <th>Telephone</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr >
-                <td th:text="${dataDTO.getPatient().getLastName()}"></td>
-                <td th:text="${dataDTO.getPatient().getFirstName()}"></td>
-                <td th:text="${dataDTO.getPatient().getBirthDate()}"></td>
-                <td th:text="${dataDTO.getPatient().getGender()}"></td>
-                <td th:text="${dataDTO.getPatient().getAddress()}"></td>
-                <td th:text="${dataDTO.getPatient().getPhoneNumber()}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <form action="#" th:action="@{/client/updatePatientFile}" th:object="${patient}" method="POST">
-        <table class="t2">
-            <tr >
-                <td>
-                    <input type="hidden" th:field="${dataDTO.patient.idPatient}" />
-                    <input type="hidden" th:field="${dataDTO.patient.lastName}" />
-                    <input type="hidden" th:field="${dataDTO.patient.firstName}" />
-                    <input type="hidden" th:field="${dataDTO.patient.birthDate}" />
-                    <input type="hidden" th:field="${dataDTO.patient.gender}" />
-
-                </td>
-                <td>
-                </td>
-                <td colspan="3">
-                    <div th:if="${!dataDTO.patient.gender.equals(' ')}">
-                        <input type="submit" value="Mettre à jour l'adresse et/ou le téléphone"
-                               class="orangeButton"/>
-                    </div>
-                </td>
-                <td>
-                    <label for="address">
-                        <input type="text" th:field="${dataDTO.patient.address}" id="address"
-                               placeholder="Nouvelle adresse" class="inputWithoutBorder"/>
-                    </label>
-                </td>
-                <td >
-                    <label for="phoneNumber">
-                        <input type="text" th:field="${dataDTO.patient.phoneNumber}" id="phoneNumber"
-                               placeholder="Nouveau Telephone" class="inputWithoutBorder"/>
-                    </label>
-                </td>
-            </tr>
-        </table>
-    </form>
+    </div>
+    <div th:if="${#fields.hasGlobalErrors()}">
+        <p th:each="err : ${#fields.globalErrors() }" th:text="${err}" class="error"/>
+    </div>
     <br></br>
-    <table>
-        <thead>
+</form>
+<table>
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Prenom</th>
+        <th>Date de naissance</th>
+        <th>Genre</th>
+        <th>Adresse</th>
+        <th>Telephone</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${dataDTO.getPatient().getLastName()}"></td>
+        <td th:text="${dataDTO.getPatient().getFirstName()}"></td>
+        <td th:text="${dataDTO.getPatient().getBirthDate()}"></td>
+        <td th:text="${dataDTO.getPatient().getGender()}"></td>
+        <td th:text="${dataDTO.getPatient().getAddress()}"></td>
+        <td th:text="${dataDTO.getPatient().getPhoneNumber()}"></td>
+    </tr>
+    </tbody>
+</table>
+<form action="#" th:action="@{/client/updatePatientFile}" th:object="${patient}" method="POST">
+    <table class="t2">
         <tr>
-            <th   class="text-align-left da">Date</th>
-            <th  class="text-align-left t">Note</th>
+            <td>
+                <input type="hidden" th:field="${dataDTO.patient.idPatient}"/>
+                <input type="hidden" th:field="${dataDTO.patient.lastName}"/>
+                <input type="hidden" th:field="${dataDTO.patient.firstName}"/>
+                <input type="hidden" th:field="${dataDTO.patient.birthDate}"/>
+                <input type="hidden" th:field="${dataDTO.patient.gender}"/>
+                <input type="hidden" th:field="${dataDTO.riskLevel}"/>
+            </td>
+            <td>
+            </td>
+            <td colspan="3">
+                <div th:if="${!dataDTO.patient.gender.equals(' ')}">
+                    <input type="submit" value="Mettre à jour l'adresse et/ou le téléphone"
+                           class="orangeButton"/>
+                </div>
+            </td>
+            <td>
+                <label for="address">
+                    <input type="text" th:field="${dataDTO.patient.address}" id="address"
+                           placeholder="Nouvelle adresse" class="inputWithoutBorder"/>
+                </label>
+            </td>
+            <td>
+                <label for="phoneNumber">
+                    <input type="text" th:field="${dataDTO.patient.phoneNumber}" id="phoneNumber"
+                           placeholder="Nouveau Telephone" class="inputWithoutBorder"/>
+                </label>
+            </td>
         </tr>
-        </thead>
-        <tbody>
-        <tr th:each="note : ${dataDTO.notesDTOs}">
-            <td  th:text="${note.date}" class="text-align-left da" ></td>
-            <td  style="white-space: pre-wrap" th:text="${note.noteText}" class="text-align-left t"></td>
-        </tr>
-        </tbody>
     </table>
-    <form action="#" th:action="@{/client/addNoteToPatientNotes}" th:object="${dataDTO}" method="POST">
-        <table class="t2">
-            <tr>
-                <td colspan="2" vertical-align="center" >
-                    <div th:if="${!dataDTO.patient.gender.equals(' ')}">
-                        <input type="submit" value="Ajouter une note" class="orangeButton"/>
-                    </div>
-                </td>
-                <td >
-                    <input type="hidden" th:field="${dataDTO.patient.idPatient}" />
-                    <input type="hidden" th:field="${dataDTO.patient.lastName}" />
-                    <input type="hidden" th:field="${dataDTO.patient.firstName}" />
-                    <input type="hidden" th:field="${dataDTO.patient.birthDate}" />
-                    <input type="hidden" th:field="${dataDTO.patient.gender}" />
-                    <input type="hidden" th:field="${dataDTO.patient.address}" />
-                    <input type="hidden" th:field="${dataDTO.patient.phoneNumber}" />
-                </td>
-                <td colspan="3" >
-                    <label for="noteText"></label>
-                    <br>
-                    <div>
+</form>
+<br></br>
+<table>
+    <thead>
+    <tr>
+        <th class="text-align-left da">Date</th>
+        <th class="text-align-left t">Note</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="note : ${dataDTO.notesDTOs}">
+        <td th:text="${note.date}" class="text-align-left da"></td>
+        <td style="white-space: pre-wrap" th:text="${note.noteText}" class="text-align-left t"></td>
+    </tr>
+    </tbody>
+</table>
+<form action="#" th:action="@{/client/addNoteToPatientNotes}" th:object="${dataDTO}" method="POST">
+    <table class="t2">
+        <tr>
+            <td colspan="2" vertical-align="center">
+                <div th:if="${!dataDTO.patient.gender.equals(' ')}">
+                    <input type="submit" value="Ajouter une note" class="orangeButton"/>
+                </div>
+            </td>
+            <td>
+                <input type="hidden" th:field="${dataDTO.patient.idPatient}"/>
+                <input type="hidden" th:field="${dataDTO.patient.lastName}"/>
+                <input type="hidden" th:field="${dataDTO.patient.firstName}"/>
+                <input type="hidden" th:field="${dataDTO.patient.birthDate}"/>
+                <input type="hidden" th:field="${dataDTO.patient.gender}"/>
+                <input type="hidden" th:field="${dataDTO.patient.address}"/>
+                <input type="hidden" th:field="${dataDTO.patient.phoneNumber}"/>
+                <input type="hidden" th:field="${dataDTO.riskLevel}"/>
+            </td>
+            <td colspan="3">
+                <label for="noteText"></label>
+                <br>
+                <div>
                             <textarea th:field="${dataDTO.noteText}" id="noteText" name="noteText" rows="2"
                                       cols="50"></textarea>
-                        <br/>
-                        <p class="error" th:if="${#fields.hasErrors('noteText')}"
-                           th:errors="*{noteText}"></p>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                </td>
-                <td >
-                </td>
-                <td colspan="3">
-                </td>
-            </tr>
-        </table>
-    </form>
-    <br></br>
-
+                    <br/>
+                    <p class="error" th:if="${#fields.hasErrors('noteText')}"
+                       th:errors="*{noteText}"></p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+            </td>
+            <td>
+            </td>
+            <td colspan="3">
+            </td>
+        </tr>
+    </table>
+</form>
+<br></br>
+<table>
+    <thead>
+    <tr>
+        <th>Niveau de risque</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${dataDTO.riskLevel}"></td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

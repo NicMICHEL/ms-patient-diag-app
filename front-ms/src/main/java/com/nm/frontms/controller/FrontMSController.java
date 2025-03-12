@@ -1,5 +1,6 @@
 package com.nm.frontms.controller;
 
+
 import com.nm.frontms.beans.NoteBean;
 import com.nm.frontms.beans.PatientBean;
 import com.nm.frontms.web.dto.DataDTO;
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 @Controller
 @RequestMapping("/client")
 public class FrontMSController {
@@ -47,7 +47,7 @@ public class FrontMSController {
         try {
             PatientBean patient = webClient
                     .get()
-                    .uri("http://localhost:"+gatewayMSPort+"/patientFile/" + firstName + "/" + lastName)
+                    .uri("http://localhost:" + gatewayMSPort + "/patientFile/" + firstName + "/" + lastName)
                     .headers(h -> h.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
                     .retrieve()
                     .bodyToMono(PatientBean.class)
@@ -69,7 +69,7 @@ public class FrontMSController {
             , @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient) throws Exception {
         try {
             return webClient.post()
-                    .uri("http://localhost:"+gatewayMSPort+"/patientFile/")
+                    .uri("http://localhost:" + gatewayMSPort + "/patientFile/")
                     .headers(h -> h.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(newPatientBean)
@@ -142,20 +142,48 @@ public class FrontMSController {
         }
     }
 
+    @GetMapping("/riskLevel/{patientId}/{birthDate}/{gender}")
+    public String getRiskLevelFromRiskMS(@PathVariable String patientId, @PathVariable String birthDate,
+                                         @PathVariable String gender,
+                                         @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient)
+            throws Exception {
+        try {
+            String riskLevel = webClient
+                    .get()
+                    .uri("http://localhost:" + gatewayMSPort + "/patientRisk/riskLevel/" + patientId + "/"
+                            + birthDate + "/" + gender)
+                    //.uri("http://localhost:9004/patientRisk/riskLevel/" + patientId + "/" + birthDate + "/" + gender)
+                    .headers(h -> h.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            return riskLevel;
+        } catch (WebClientResponseException wcre) {
+            logger.error("Exception in method getRiskLevelFromRiskMS()", wcre);
+            logger.error("Error Response Code is {} and Response Body is {}"
+                    , wcre.getStatusCode(), wcre.getResponseBodyAsString());
+            throw wcre;
+        } catch (Exception ex) {
+            logger.error("Exception in method getRiskLevelFromRiskMS()", ex);
+            throw ex;
+        }
+    }
+
     public void setDataDTOAttributes(DataDTO dataDTO, String firstNameToSearch, String lastNameToSearch,
-                                     PatientBean patient, List<NoteBean> notesDTOs, String noteText)
-    {
+                                     PatientBean patient, List<NoteBean> notesDTOs, String noteText, String riskLevel) {
         dataDTO.setFirstNameToSearch(firstNameToSearch);
         dataDTO.setLastNameToSearch(lastNameToSearch);
         dataDTO.setPatient(patient);
         dataDTO.setNotesDTOs(notesDTOs);
         dataDTO.setNoteText(noteText);
+        dataDTO.setRiskLevel(riskLevel);
     }
 
     public void setPatientInfosTemplateAttributes(Model model, String firstNameToSearch, String lastNameToSearch,
-                                                  PatientBean patient, List<NoteBean> notesDTOs, String noteText) {
+                                                  PatientBean patient, List<NoteBean> notesDTOs,
+                                                  String noteText, String riskLevel) {
         DataDTO dataDTO = new DataDTO();
-        setDataDTOAttributes(dataDTO, firstNameToSearch, lastNameToSearch, patient, notesDTOs, noteText);
+        setDataDTOAttributes(dataDTO, firstNameToSearch, lastNameToSearch, patient, notesDTOs, noteText, riskLevel);
         model.addAttribute("dataDTO", dataDTO);
     }
 
@@ -163,7 +191,7 @@ public class FrontMSController {
     public String showPatientInfosForm(Model model) {
         setPatientInfosTemplateAttributes(model, "", "",
                 new PatientBean("", "", "", " ", "", ""),
-                new ArrayList<>(), "");
+                new ArrayList<>(), "", "");
         return "patientInfos";
     }
 
@@ -190,19 +218,21 @@ public class FrontMSController {
                 setDataDTOAttributes(dataDTO,
                         "", "",
                         new PatientBean("", "", "", " ", "", ""),
-                        new ArrayList<>(), "");
+                        new ArrayList<>(), "", "");
                 model.addAttribute("dataDTO", dataDTO);
                 return "patientInfos";
             }
+            String riskLevel = getRiskLevelFromRiskMS(idPatient, patient.getBirthDate(), patient.getGender(),
+                    authorizedClient);
             List<NoteBean> notesDTOs = getAllNotesByIdFromNotesMS(idPatient, authorizedClient);
             setPatientInfosTemplateAttributes(model, "", "", patient, notesDTOs,
-                    "");
+                    "", riskLevel);
             return "patientInfos";
         } else {
             setDataDTOAttributes(dataDTO,
                     dataDTO.getFirstNameToSearch(), dataDTO.getLastNameToSearch(),
                     new PatientBean("", "", "", " ", "", ""),
-                    new ArrayList<>(), "");
+                    new ArrayList<>(), "", "");
             model.addAttribute("dataDTO", dataDTO);
             return "patientInfos";
         }
@@ -216,13 +246,14 @@ public class FrontMSController {
         List<NoteBean> notesDTOs = getAllNotesByIdFromNotesMS(String.valueOf(updatedPatient.getIdPatient()),
                 authorizedClient);
         setPatientInfosTemplateAttributes(model, "", "", updatedPatient, notesDTOs,
-                "");
+                "", dataDTO.getRiskLevel());
         return "patientInfos";
     }
 
     @PostMapping("/addNoteToPatientNotes")
     public String addNoteToPatientNotes(DataDTO dataDTO, BindingResult result, Model model,
-                                        @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient) throws Exception {
+                                        @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient)
+            throws Exception {
         PatientBean patient = dataDTO.getPatient();
         String patientId = String.valueOf(patient.getIdPatient());
         String noteText = dataDTO.getNoteText();
@@ -237,8 +268,10 @@ public class FrontMSController {
             noteBean.setNoteText(noteText);
             addNoteWithNotesMS(noteBean, authorizedClient);
             List<NoteBean> updatedNotesDTOs = getAllNotesByIdFromNotesMS(noteBean.getPatientId(), authorizedClient);
+            String updatedRiskLevel = getRiskLevelFromRiskMS(patientId
+                    , patient.getBirthDate(), patient.getGender(), authorizedClient);
             setPatientInfosTemplateAttributes(model, "", "", patient, updatedNotesDTOs,
-                    "");
+                    "", updatedRiskLevel);
             return "patientInfos";
         } else {
             String emptyNoteMessage = " Veuillez écrire une note.";
