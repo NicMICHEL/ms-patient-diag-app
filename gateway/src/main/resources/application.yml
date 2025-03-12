@@ -1,0 +1,30 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: patientFile_route
+          uri: http://localhost:${patientMSPort}
+          predicates:
+            - Path=/patientFile/**
+
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: '10'
+    lease-expiration-duration-in-seconds: '30'
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:${eurekaMSPort}/eureka/
+server:
+  port: ${gatewayMSPort}
+
+# environment variables
+eurekaMSPort: '9102'
+gatewayMSPort: '9004'
+patientMSPort: '9001'
