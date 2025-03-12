@@ -94,6 +94,61 @@
             </tr>
         </table>
     </form>
+    <br></br>
+    <table>
+        <thead>
+        <tr>
+            <th   class="text-align-left da">Date</th>
+            <th  class="text-align-left t">Note</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="note : ${dataDTO.notesDTOs}">
+            <td  th:text="${note.date}" class="text-align-left da" ></td>
+            <td  style="white-space: pre-wrap" th:text="${note.noteText}" class="text-align-left t"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form action="#" th:action="@{/client/addNoteToPatientNotes}" th:object="${dataDTO}" method="POST">
+        <table class="t2">
+            <tr>
+                <td colspan="2" vertical-align="center" >
+                    <div th:if="${!dataDTO.patient.gender.equals(' ')}">
+                        <input type="submit" value="Ajouter une note" class="orangeButton"/>
+                    </div>
+                </td>
+                <td >
+                    <input type="hidden" th:field="${dataDTO.patient.idPatient}" />
+                    <input type="hidden" th:field="${dataDTO.patient.lastName}" />
+                    <input type="hidden" th:field="${dataDTO.patient.firstName}" />
+                    <input type="hidden" th:field="${dataDTO.patient.birthDate}" />
+                    <input type="hidden" th:field="${dataDTO.patient.gender}" />
+                    <input type="hidden" th:field="${dataDTO.patient.address}" />
+                    <input type="hidden" th:field="${dataDTO.patient.phoneNumber}" />
+                </td>
+                <td colspan="3" >
+                    <label for="noteText"></label>
+                    <br>
+                    <div>
+                            <textarea th:field="${dataDTO.noteText}" id="noteText" name="noteText" rows="2"
+                                      cols="50"></textarea>
+                        <br/>
+                        <p class="error" th:if="${#fields.hasErrors('noteText')}"
+                           th:errors="*{noteText}"></p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                </td>
+                <td >
+                </td>
+                <td colspan="3">
+                </td>
+            </tr>
+        </table>
+    </form>
+    <br></br>
 
 </body>
 </html>
