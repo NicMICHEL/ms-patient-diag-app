@@ -1,0 +1,14 @@
+eureka:
+  client:
+    fetchRegistry: 'false'
+    registerWithEureka: 'false'
+    serviceUrl:
+      defaultZone: http://localhost:${eurekaMSPort}/eureka/
+spring:
+  application:
+    name: eureka-server
+server:
+  port: ${eurekaMSPort}
+
+# environment variables
+eurekaMSPort: '9102'

@@ -1,0 +1,38 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/microdiag-app/protocol/openid-connect/certs
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/microdiag-app
+        registration:
+          client-test:
+            client-secret: Jr3XRL02E2vNxgE1SOh9EEqPT6Y5OLyb
+            provider: keycloak
+            client-id: client-test
+            authorization-grant-type: authorization_code
+            scope: openid
+  application:
+    name: front-ms
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: '10'
+    lease-expiration-duration-in-seconds: '30'
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:${eurekaMSPort}/eureka/
+server:
+  port: ${frontMSPort}
+
+# environment variables
+eurekaMSPort: '9102'
+frontMSPort: '8081'
+gatewayMSPort: '9004'

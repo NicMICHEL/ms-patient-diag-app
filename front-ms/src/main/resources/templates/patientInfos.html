@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/min.css}"/>
+    <title>welcome</title>
+</head>
+<body>
+    <h1 >Application Patient Diag</h1>
+    <form th:action="@{/logout}" method="post">
+        <br>
+        <button type="submit" th:text="'Se '+'déconnecter'" class="navButton" accesskey="d">
+            Se déconnecter
+        </button>
+    </form>
+    <form action="#" th:action="@{/client/getPatientFile}" th:object="${dataDTO}" method="GET">
+        <div class="box4">
+            <label>
+                <input type="text"  th:field="*{lastNameToSearch}" placeholder="nom" class="input300"/>
+            </label>
+            <label>
+                <input type="text"  th:field="*{firstNameToSearch}" placeholder="prenom" class="input300"/>
+            </label>
+            <input type="submit" value="Chercher" class="blueButton"/>
+        </div>
+        <div class="box4b">
+            <div>
+                <p class="error" th:if="${#fields.hasErrors('lastNameToSearch')}"
+                   th:errors="*{lastNameToSearch}"></p>
+            </div>
+            <div>
+                <p class="error" th:if="${#fields.hasErrors('firstNameToSearch')}"
+                        th:errors="*{firstNameToSearch}"></p>
+            </div>
+        </div>
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors() }" th:text="${err}" class="error" />
+        </div>
+        <br></br>
+    </form>
+    <table >
+        <thead>
+            <tr>
+                <th >Nom</th>
+                <th>Prenom</th>
+                <th>Date de naissance</th>
+                <th>Genre</th>
+                <th>Adresse</th>
+                <th>Telephone</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr >
+                <td th:text="${dataDTO.getPatient().getLastName()}"></td>
+                <td th:text="${dataDTO.getPatient().getFirstName()}"></td>
+                <td th:text="${dataDTO.getPatient().getBirthDate()}"></td>
+                <td th:text="${dataDTO.getPatient().getGender()}"></td>
+                <td th:text="${dataDTO.getPatient().getAddress()}"></td>
+                <td th:text="${dataDTO.getPatient().getPhoneNumber()}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <form action="#" th:action="@{/client/updatePatientFile}" th:object="${patient}" method="POST">
+        <table class="t2">
+            <tr >
+                <td>
+                    <input type="hidden" th:field="${dataDTO.patient.idPatient}" />
+                    <input type="hidden" th:field="${dataDTO.patient.lastName}" />
+                    <input type="hidden" th:field="${dataDTO.patient.firstName}" />
+                    <input type="hidden" th:field="${dataDTO.patient.birthDate}" />
+                    <input type="hidden" th:field="${dataDTO.patient.gender}" />
+
+                </td>
+                <td>
+                </td>
+                <td colspan="3">
+                    <div th:if="${!dataDTO.patient.gender.equals(' ')}">
+                        <input type="submit" value="Mettre à jour l'adresse et/ou le téléphone"
+                               class="orangeButton"/>
+                    </div>
+                </td>
+                <td>
+                    <label for="address">
+                        <input type="text" th:field="${dataDTO.patient.address}" id="address"
+                               placeholder="Nouvelle adresse" class="inputWithoutBorder"/>
+                    </label>
+                </td>
+                <td >
+                    <label for="phoneNumber">
+                        <input type="text" th:field="${dataDTO.patient.phoneNumber}" id="phoneNumber"
+                               placeholder="Nouveau Telephone" class="inputWithoutBorder"/>
+                    </label>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/microdiag-app/protocol/openid-connect/certs
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/patient?allowPublicKeyRetrieval=true
+    password: rootrootA.1
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: 'true'
+  application:
+    name: patient-ms
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: '10'
+    lease-expiration-duration-in-seconds: '30'
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:${eurekaMSPort}/eureka/
+server:
+  port: ${patientMSport}
+
+# environment variables
+patientMSport: '9001'
+eurekaMSPort: '9102'
