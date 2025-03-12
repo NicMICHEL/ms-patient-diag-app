@@ -17,6 +17,10 @@ spring:
           uri: http://localhost:${notesMSPort}
           predicates:
             - Path=/patientNote/**
+        - id: patientRisk_route
+          uri: http://localhost:${riskMSPort}
+          predicates:
+            - Path=/patientRisk/**
 eureka:
   instance:
     lease-renewal-interval-in-seconds: '10'
@@ -32,3 +36,4 @@ eurekaMSPort: '9102'
 gatewayMSPort: '9004'
 patientMSPort: '9001'
 notesMSPort: '9005'
+riskMSPort: '9006'

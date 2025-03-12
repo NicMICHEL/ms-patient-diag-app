@@ -16,7 +16,8 @@ public class PatientBean {
     public PatientBean() {
     }
 
-    public PatientBean(String lastName, String firstName, String birthDate, String gender, String address, String phoneNumber) {
+    public PatientBean(String lastName, String firstName, String birthDate, String gender, String address,
+                       String phoneNumber) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.birthDate = birthDate;
@@ -25,7 +26,8 @@ public class PatientBean {
         this.phoneNumber = phoneNumber;
     }
 
-    public PatientBean(int idPatient, String lastName, String firstName, String birthDate, String gender, String address, String phoneNumber) {
+    public PatientBean(int idPatient, String lastName, String firstName, String birthDate, String gender,
+                       String address, String phoneNumber) {
         this.idPatient = idPatient;
         this.lastName = lastName;
         this.firstName = firstName;

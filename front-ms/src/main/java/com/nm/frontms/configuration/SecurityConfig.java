@@ -1,5 +1,6 @@
 package com.nm.frontms.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -12,9 +13,13 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${frontMSPort}")
+    private String frontMSPort;
 
     @Bean
     SecurityFilterChain clientSecurityFilterChain(
@@ -24,7 +29,7 @@ public class SecurityConfig {
         http.logout((logout) -> {
             var logoutSuccessHandler =
                     new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
-            logoutSuccessHandler.setPostLogoutRedirectUri("http://localhost:8081/client/");
+            logoutSuccessHandler.setPostLogoutRedirectUri("http://localhost:" + frontMSPort + "/client/");
             logout.logoutSuccessHandler(logoutSuccessHandler);
         });
         http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
@@ -34,4 +39,5 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
+
 }

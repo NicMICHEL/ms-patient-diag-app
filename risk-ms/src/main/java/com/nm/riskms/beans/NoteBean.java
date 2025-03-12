@@ -1,17 +1,12 @@
-package com.nm.frontms.beans;
-
-import jakarta.validation.constraints.NotBlank;
-
-import java.util.Objects;
+package com.nm.riskms.beans;
 
 public class NoteBean {
 
     private String patientId;
 
     private String lastName;
-    @NotBlank(message = "Veuillez écrire une note.")
-    private String noteText;
 
+    private String noteText;
     private String date;
 
     public NoteBean() {
@@ -22,10 +17,6 @@ public class NoteBean {
         this.lastName = lastName;
         this.noteText = noteText;
         this.date = date;
-    }
-
-    public NoteBean(String noteText) {
-        this.noteText = noteText;
     }
 
     public String getPatientId() {
@@ -68,18 +59,6 @@ public class NoteBean {
                 ", noteText='" + noteText + '\'' +
                 ", date='" + date + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof NoteBean noteBean)) return false;
-        return Objects.equals(patientId, noteBean.patientId) && Objects.equals(lastName, noteBean.lastName)
-                && Objects.equals(noteText, noteBean.noteText) && Objects.equals(date, noteBean.date);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(patientId, lastName, noteText, date);
     }
 
 }
